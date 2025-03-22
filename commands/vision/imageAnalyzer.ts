@@ -147,7 +147,7 @@ export async function analyzeImage(msg: WAMessage, sock: any): Promise<string> {
         // Formata a resposta de acordo com o tipo de chat
         const response_text = data.candidates[0].content.parts[0].text;
         if (isGroup) {
-            return `🖼️ *Análise da Imagem*\n\n${response_text}`;
+            return `Opa, e essa foto em? 👀\n\n${response_text}`;
         } else {
             return response_text; // No privado, envia só o texto para ser mais casual
         }
