@@ -1,0 +1,39 @@
+{
+	"name": "amanda-bot",
+	"version": "1.0.0",
+	"description": "Amanda WhatsApp Bot",
+	"main": "dist/index.js",
+	"scripts": {
+		"build": "tsc",
+		"start": "npm run build && node --expose-gc --max-old-space-size=8192 --optimize_for_size dist/index.js",
+		"dev": "tsc -w",
+		"import-data": "npm run build && node dist/scripts/importData.js"
+	},
+	"dependencies": {
+		"@nuintun/qrcode": "4.1.2",
+		"@whiskeysockets/baileys": "^6.7.13",
+		"dotenv": "16.4.7",
+		"fs": "^0.0.1-security",
+		"google-tts-api": "2.0.2",
+		"mongodb": "^6.5.0",
+		"node-fetch": "^2.7.0",
+		"p-queue": "8.1.0",
+		"pino-pretty": "^13.0.0",
+		"qrcode-terminal": "0.12.0",
+		"request": "2.88.2",
+		"uuid": "11.0.5"
+	},
+	"devDependencies": {
+		"@types/mongodb": "^4.0.7",
+		"@types/node": "20.11.24",
+		"@types/node-fetch": "^2.6.11",
+		"@types/p-queue": "^3.2.1",
+		"@types/request": "^2.48.12",
+		"typescript": "5.3.3"
+	},
+	"engines": {
+		"node": ">=14.0.0"
+	},
+	"license": "MIT",
+	"type": "commonjs"
+}

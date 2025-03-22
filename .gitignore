@@ -1,0 +1,44 @@
+# Dependências
+node_modules/
+package-lock.json
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Diretórios de cache
+.cache/
+.npm/
+
+# Arquivos de histórico e configuração
+historical/
+PersonBOT/
+*.config
+
+# Arquivos de mídia temporários
+*.mp3
+*.mp4
+*.wav
+*.jpg
+*.png
+*.gif
+
+# Outros
+dist/
+build/
+coverage/
+.vscode/
+.idea/
+
+baileys_auth_info/*
+.qodo

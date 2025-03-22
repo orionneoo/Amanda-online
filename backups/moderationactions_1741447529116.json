@@ -1,0 +1,70 @@
+[
+  {
+    "_id": "67c89bdefbbb6d911402c676",
+    "type": "ban",
+    "userId": "5521976574536@s.whatsapp.net",
+    "groupId": "120363391697122309@g.us",
+    "reason": "Sem motivo especificado",
+    "moderatorId": "5521967233931@s.whatsapp.net",
+    "active": true,
+    "timestamp": "2025-03-05T18:45:50.907Z",
+    "__v": 0
+  },
+  {
+    "_id": "67c89cb4fbbb6d911402c787",
+    "type": "kick",
+    "userId": "5521984581681@s.whatsapp.net",
+    "groupId": "120363391697122309@g.us",
+    "reason": "Sem motivo especificado",
+    "moderatorId": "5521967233931@s.whatsapp.net",
+    "active": true,
+    "timestamp": "2025-03-05T18:49:24.308Z",
+    "__v": 0
+  },
+  {
+    "_id": "67c89cd4fbbb6d911402c7b4",
+    "type": "ban",
+    "userId": "5521984581681@s.whatsapp.net",
+    "groupId": "120363391697122309@g.us",
+    "reason": "Sem motivo especificado",
+    "moderatorId": "5521967233931@s.whatsapp.net",
+    "active": true,
+    "timestamp": "2025-03-05T18:49:56.117Z",
+    "__v": 0
+  },
+  {
+    "_id": "67c89d1cfbbb6d911402c805",
+    "type": "mute",
+    "userId": "5521976574536@s.whatsapp.net",
+    "groupId": "120363391697122309@g.us",
+    "reason": "Sem motivo especificado",
+    "moderatorId": "5521967233931@s.whatsapp.net",
+    "duration": 60,
+    "active": true,
+    "timestamp": "2025-03-05T18:51:08.010Z",
+    "__v": 0
+  },
+  {
+    "_id": "67c89d5ffbbb6d911402c894",
+    "type": "mute",
+    "userId": "5521972322996@s.whatsapp.net",
+    "groupId": "120363391697122309@g.us",
+    "reason": "demais",
+    "moderatorId": "5521967233931@s.whatsapp.net",
+    "duration": 60,
+    "active": true,
+    "timestamp": "2025-03-05T18:52:15.022Z",
+    "__v": 0
+  },
+  {
+    "_id": "67c89dd7fbbb6d911402c928",
+    "type": "warn",
+    "userId": "5521972322996@s.whatsapp.net",
+    "groupId": "120363397666250930@g.us",
+    "reason": "Sem motivo especificado",
+    "moderatorId": "5521967233931@s.whatsapp.net",
+    "active": true,
+    "timestamp": "2025-03-05T18:54:15.202Z",
+    "__v": 0
+  }
+]
