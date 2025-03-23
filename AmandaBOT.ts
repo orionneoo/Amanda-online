@@ -8,6 +8,7 @@ import { handleAdminCommand } from './commands/admin';
 import { handleMemberCommand } from './commands/members';
 import { MessageData, isAmandaActivated, formatActivationMessage, PREFIX, CONFIG } from './config';
 import { analyzeImage } from './commands/vision/imageAnalyzer';
+import { summarizeMessages } from './commands/chat/summarizer';
 
 // Carrega variáveis de ambiente
 dotenv.config();
@@ -199,6 +200,16 @@ interface GeminiConfig {
     };
     contents: GeminiMessage[];
 }
+
+// Adicionar após as outras interfaces
+interface HistoricalMessage {
+    sender: string;
+    content: string;
+    timestamp: number;
+}
+
+// Adicionar após as outras variáveis globais
+const messageHistory: Map<string, HistoricalMessage[]> = new Map();
 
 // Sistema de logging
 const logger = {
@@ -646,6 +657,39 @@ async function handle(msg: WAMessage): Promise<void> {
         if (!jid) return;
 
         const isGroup = fromGroup(msg);
+
+        // Armazena a mensagem no histórico se for grupo
+        if (isGroup) {
+            const sender = (msg.key.participant || msg.key.remoteJid || '').split('@')[0];
+            const timestamp = msg.messageTimestamp as number;
+            
+            if (!messageHistory.has(jid)) {
+                messageHistory.set(jid, []);
+            }
+            
+            messageHistory.get(jid)?.push({
+                sender,
+                content: extractedText,
+                timestamp
+            });
+            
+            // Limpa mensagens antigas (mais de 12 horas)
+            const twelveHoursAgo = Date.now() - (12 * 60 * 60 * 1000);
+            messageHistory.set(
+                jid,
+                messageHistory.get(jid)?.filter(m => m.timestamp * 1000 > twelveHoursAgo) || []
+            );
+
+            // Comando !resumir
+            if (text === '!resumir') {
+                // Envia mensagem de processamento
+                await sendMessage(jid, '🤔 Peraí, deixa eu dar uma olhada nas conversas...');
+
+                const summary = await summarizeMessages(jid);
+                await sendMessage(jid, summary);
+                return;
+            }
+        }
 
         // Salva informações no banco de dados
         try {

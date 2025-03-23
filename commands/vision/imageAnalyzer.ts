@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 import fetch from 'node-fetch';
 import path from 'path';
 import fs from 'fs';
+import axios from 'axios';
 
 dotenv.config();
 
@@ -88,64 +89,66 @@ export async function analyzeImage(msg: WAMessage, sock: any): Promise<string> {
         const mimeType = targetMsg.message.imageMessage.mimetype || 'image/jpeg';
 
         // Prepara o prompt personalizado para o Gemini Flash
-        const prompt = {
-            contents: [
-                {
-                    parts: [
-                        {
-                            text: `${personality}\n\nVocê é uma IA especializada em análise de imagens. Mantenha sua personalidade ao descrever a imagem a seguir. Descreva de forma envolvente, mantendo o tom de voz e características definidas acima. Inclua detalhes sobre elementos principais, cores, ações e ambiente.`
-                        },
-                        {
-                            inline_data: {
-                                mime_type: mimeType,
-                                data: imageBase64
-                            }
-                        }
-                    ]
-                }
-            ],
-            generationConfig: {
-                temperature: 0.7,
-                topK: 40,
-                topP: 0.8,
-                maxOutputTokens: 500
-            }
-        };
+        const prompt = `${personality}
+
+Você é a Amanda, uma pessoa divertida e descontraída e safada. Olhe essa imagem e responda de forma natural, como se fosse uma amiga conversando no grupo.
+
+Algumas regras importantes:
+- Seja breve e direta
+- Use linguagem informal e gírias
+- Não mencione que você é uma IA
+- Não dê detalhes técnicos sobre a imagem
+- Mantenha o tom divertido e amigável
+- Reaja à imagem como se fosse algo que uma amiga te enviou no WhatsApp
+
+Descreva a imagem de forma natural:`;
 
         // Faz a requisição para a API do Gemini Flash
         console.log('🤖 Enviando imagem para análise rápida...');
-        const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
+        const response = await axios.post(
+            GEMINI_API_URL,
+            {
+                contents: [
+                    {
+                        parts: [
+                            { text: prompt },
+                            {
+                                inlineData: {
+                                    mimeType: "image/jpeg",
+                                    data: imageBase64
+                                }
+                            }
+                        ]
+                    }
+                ],
+                generationConfig: {
+                    temperature: 0.9,
+                    maxOutputTokens: 150,
+                    topP: 0.8,
+                    topK: 40
+                }
             },
-            body: JSON.stringify(prompt)
-        });
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-goog-api-key': GEMINI_API_KEY
+                }
+            }
+        );
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('❌ Erro na resposta da API:', errorText);
-            throw new Error(`Erro na API do Gemini Flash: ${response.status} - ${errorText}`);
+        if (response.status !== 200) {
+            throw new Error(`Erro na API do Gemini: ${response.statusText}`);
         }
 
-        const data: GeminiResponse = await response.json();
-        
-        // Verifica se há erro na resposta
-        if (data.error) {
-            console.error('❌ Erro retornado pela API:', data.error);
-            throw new Error(data.error.message || 'Erro desconhecido na API do Gemini');
-        }
-
-        // Verifica se há resposta válida
-        if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
-            console.log('❌ Resposta da API não contém análise');
-            throw new Error('A API não retornou uma análise válida');
+        const responseData = response.data;
+        if (!responseData.candidates || !responseData.candidates[0]?.content?.parts?.[0]?.text) {
+            throw new Error('Resposta inválida da API do Gemini');
         }
 
         console.log('✅ Análise personalizada concluída com sucesso');
         
         // Formata a resposta de acordo com o tipo de chat
-        const response_text = data.candidates[0].content.parts[0].text;
+        const response_text = responseData.candidates[0].content.parts[0].text;
         if (isGroup) {
             return `Opa, e essa foto em? 👀\n\n${response_text}`;
         } else {

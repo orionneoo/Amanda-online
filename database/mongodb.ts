@@ -383,6 +383,50 @@ class MongoDBManager {
             throw error;
         }
     }
+
+    public async getMessagesByGroup(groupId: string, since: Date): Promise<any[]> {
+        await this.connect();
+        const messages = this.db.collection('messages');
+        try {
+            const groupMessages = await messages.find({
+                group_id: groupId,
+                created_at: { $gte: since }
+            })
+            .sort({ created_at: 1 })
+            .toArray();
+            
+            console.log(`✅ ${groupMessages.length} mensagens encontradas para o grupo ${groupId}`);
+            return groupMessages;
+        } catch (error) {
+            console.error('❌ Erro ao buscar mensagens do grupo:', error);
+            return [];
+        }
+    }
+
+    public async getGroupInfo(groupId: string): Promise<any> {
+        await this.connect();
+        const groups = this.db.collection('groups');
+        try {
+            const groupInfo = await groups.findOne({ id: groupId });
+            if (!groupInfo) {
+                console.log(`⚠️ Grupo ${groupId} não encontrado no banco de dados`);
+                return {
+                    name: 'Grupo',
+                    member_count: 0,
+                    admins: []
+                };
+            }
+            console.log(`✅ Informações do grupo ${groupId} recuperadas`);
+            return groupInfo;
+        } catch (error) {
+            console.error('❌ Erro ao buscar informações do grupo:', error);
+            return {
+                name: 'Grupo',
+                member_count: 0,
+                admins: []
+            };
+        }
+    }
 }
 
 export default MongoDBManager.getInstance(); 
